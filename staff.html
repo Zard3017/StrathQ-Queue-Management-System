@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - QueueEase</title>
+    <style>
+        :root {
+            --primary-color: #1e62b0;
+            --primary-hover: #0056b3;
+            --text-color-light: #fff;
+            --background-color: #f4f7f6;
+            --header-bg: #fff;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: #333;
+        }
+
+        .main-header {
+            background-color: var(--header-bg);
+            box-shadow: 0 2px 4px var(--shadow-color);
+            position: sticky; /* Make the header stick to the same position*/
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 60px;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-left .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .navbar-center {
+            display: flex;
+            gap: 25px;
+        }
+
+        .navbar-center a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .navbar-center a:hover, .navbar-center a.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            font-size: 1.5em;
+            color: #555;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .user-profile {
+            position: relative;
+        }
+
+        .user-button {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            gap: 8px;
+        }
+
+        .user-avatar {
+            font-size: 1.5em;
+        }
+
+        .dropdown-arrow {
+            font-size: 0.8em;
+        }
+
+        .user-profile .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background-color: var(--header-bg);
+            min-width: 160px;
+            box-shadow: 0 8px 16px var(--shadow-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .user-profile .dropdown-content a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .user-profile .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .logout-button {
+            background-color: var(--primary-color);
+            color: var(--text-color-light);
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .logout-button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .hamburger {
+            display: none; /* Hidden on desktop */
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 850px) {
+            .navbar-center, .logout-button {
+                display: none; /* Hide center links and logout button */
+            }
+
+            .hamburger {
+                display: block; /* Show hamburger */
+                order: -1; /* Move it to the left of the logo */
+            }
+
+            .navbar-center.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 60px; /* Below the header */
+                left: 0;
+                width: 100%;
+                background-color: var(--header-bg);
+                box-shadow: 0 2px 4px var(--shadow-color);
+                padding: 10px 0;
+                gap: 0;
+            }
+
+            .navbar-center.active a {
+                padding: 15px 20px;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .navbar-center.active a:hover {
+                background-color: #f1f1f1;
+            }
+        }
+
+        .dashboard-content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="hamburger" id="hamburger-menu" aria-label="Menu">&#9776;</button>
+                <a href="#" class="logo">Strath Q</a>
+            </div>
+
+            <div class="navbar-center" id="navbar-links">
+                <a href="#" class="active">Home</a>
+                <a href="#">View Queue</a>
+                <a href="#"></a>
+            </div>
+
+            <div class="navbar-right">
+                <a href="#" class="nav-icon" aria-label="Notifications">🔔</a>
+                <div class="user-profile" id="user-profile-menu">
+                    <button class="user-button">
+                        <span class="user-avatar">👤</span>
+                        <span class="user-name">Bradley Lusalenge</span>
+                        <span class="dropdown-arrow">▾</span>
+                    </button>
+                    <div class="dropdown-content">
+                        
+                        <a href="#">Settings</a>
+                    </div>
+                </div>
+                <a href="/logout" class="logout-button">Logout</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard-content">
+        
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger-menu');
+            const navLinks = document.getElementById('navbar-links');
+            const userProfileMenu = document.getElementById('user-profile-menu');
+
+            // mobile navigation
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            //user profile dropdown
+            userProfileMenu.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent window click event from firing
+                const dropdown = userProfileMenu.querySelector('.dropdown-content');
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // close dropdown if clicking outside of it
+            window.addEventListener('click', (event) => {
+                const dropdown = userProfileMenu.querySelector('.dropdown-content');
+                if (dropdown && dropdown.style.display === 'block') {
+                    if (!userProfileMenu.contains(event.target)) {
+                        dropdown.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

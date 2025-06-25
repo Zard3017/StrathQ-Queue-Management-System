@@ -1,0 +1,89 @@
+/* --- Dashboard Content Styles --- */
+        .dashboard-content section {
+            margin-bottom: 40px;
+        }
+
+        .dashboard-content h2 {
+            font-size: 1.8em;
+            color: #333;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header, .card-body, .card-footer {
+            padding: 15px 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h3, .available-queue-card h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .my-queue-card .position-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .queue-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .available-queue-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-footer {
+            text-align: right;
+            background-color: #f8f9fa;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-join { background-color: #28a745; color: white; }
+        .btn-join:hover { background-color: #218838; }
+        .btn-join:disabled { background-color: #6c757d; cursor: not-allowed; }
+        .btn-leave { background-color: #dc3545; color: white; }
+        .btn-leave:hover { background-color: #c82333; }
+
+        .available-queue-card.closed { background-color: #e9ecef; opacity: 0.7; }
+        .available-queue-card.closed:hover { transform: none; box-shadow: 0 2px 5px var(--shadow-color); }
+
+        .dashboard-content {
+            padding: 20px;
+        }

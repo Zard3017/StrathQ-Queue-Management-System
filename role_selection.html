@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Role - StrathQ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .role-selection-container {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        .role-selection-container h2 {
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 1.8em;
+        }
+        .role-options {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically by default */
+            gap: 15px; /* Space between buttons */
+        }
+        .role-button {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            box-sizing: border-box;
+        }
+        .role-button:hover {
+            background-color: #0056b3;
+        }
+        .role-button.staff {
+            background-color: #28a745; /* Green for Staff */
+        }
+        .role-button.staff:hover {
+            background-color: #1e7e34;
+        }
+        .role-button.admin {
+            background-color: #dc3545; /* Red for Admin */
+        }
+        .role-button.admin:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive adjustments for wider screens to place buttons side-by-side */
+        @media (min-width: 600px) {
+            .role-options {
+                flex-direction: row; /* Buttons side-by-side */
+                justify-content: center;
+            }
+            .role-button {
+                width: auto; /* Allow buttons to size based on content + padding */
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="role-selection-container">
+        <h2>Select Your Role</h2>
+        <div class="role-options">
+            <a href="student.html" class="role-button student">Student</a>
+            <a href="staff.html" class="role-button staff">Staff</a>
+            <a href="admin.html" class="role-button admin">Admin</a>
+        </div>
+    </div>
+</body>
+</html>
