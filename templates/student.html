@@ -280,6 +280,7 @@
     </style>
 </head>
 <body>
+    {% load static %}
     
     <header class="main-header">
         <nav class="navbar">
@@ -289,9 +290,9 @@
             </div>
 
             <div class="navbar-center" id="navbar-links">
-                <a href="#" class="active">Home</a>
-                <a href="joinqueue.html">Join Queue</a>
-                <a href="my_queues.html">My Queues</a>
+               <a href="{% url 'student' %}" class="active">Home</a>
+                <a href="{% url 'join_queue' %}">Join Queue</a>
+                <a href="{% url 'my_queues' %}">My Queues</a>
             </div>
 
             <div class="navbar-right">
@@ -307,7 +308,8 @@
                         <a href="#">Settings</a>
                     </div>
                 </div>
-                <a href="login.html" class="logout-button">Logout</a>
+               <a href="{% url 'login' %}" class="logout-button">Logout</a>
+
             </div>
         </nav>
     </header>
