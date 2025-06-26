@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class StrathqappConfig(AppConfig):
+class MyappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'strathq_app'
+    name = 'myapp'
