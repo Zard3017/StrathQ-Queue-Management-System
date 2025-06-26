@@ -6,7 +6,7 @@
     <title>My Queues - Strath Q</title>
     <!-- Bootstrap CSS for card and table layout -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+    {% load static %}
     <link rel="stylesheet" href="{% static 'css/student.css' %}">
     
    
@@ -20,9 +20,9 @@
             </div>
 
             <div class="navbar-center" id="navbar-links">
-                <a href="student.html">Home</a>
-                <a href="join_queue.html">Join Queue</a>
-                <a href="my_queues.html" class="active">My Queues</a>
+                <a href="{% url 'student' %}">Home</a>
+                <a href="{% url 'join_queue' %}">Join Queue</a>
+                <a href="{% url 'my_queues' %}" class="active">My Queues</a>
             </div>
 
             <div class="navbar-right">
@@ -30,7 +30,7 @@
                 <div class="user-profile" id="user-profile-menu">
                     <button class="user-button">
                         <span class="user-avatar">👤</span>
-                        <span class="user-name">Bradley Lusalenge</span>
+                        <span class="user-name">169384</span>
                         <span class="dropdown-arrow">▾</span>
                     </button>
                     <div class="dropdown-content">
@@ -70,7 +70,7 @@
                 <!-- Placeholder for when no queues are active -->
                  <div class="col-12">
                     <div class="alert alert-info" role="alert">
-                        You are not currently in any queues. <a href="joinqueue.html" class="alert-link">Join a queue</a> to get started.
+                        You are not currently in any queues. <a href="{% url 'join_queue' %}" class="alert-link">Join a queue</a> to get started.
                     </div>
                 </div> 
             </div>

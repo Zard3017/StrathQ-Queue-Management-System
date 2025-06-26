@@ -82,9 +82,9 @@
     <div class="role-selection-container">
         <h2>Select Your Role</h2>
         <div class="role-options">
-            <a href="student.html" class="role-button student">Student</a>
-            <a href="staff.html" class="role-button staff">Staff</a>
-            <a href="admin.html" class="role-button admin">Admin</a>
+            <a href="{% url 'student' %}" class="role-button student">Student</a>
+            <a href="{% url 'staff' %}" class="role-button staff">Staff</a>
+            <a href="{% url 'admin' %}" class="role-button admin">Admin</a>
         </div>
     </div>
 </body>

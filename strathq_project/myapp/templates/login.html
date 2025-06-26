@@ -78,13 +78,14 @@
 <body>
     <div class="login-container">
         <h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 30px;" >StrathQ</h2>
-        <form action="/login" method="POST">  <!--HTTP POST method FOR sending data in a secure manner-->
+        <form action="{% url 'login' %}" method="POST">  <!--HTTP POST method FOR sending data in a secure manner-->
+            {% csrf_token %}
              <div class="input-group">
                 <label for="username">Username (Student/Staff ID Number):</label>
                 <input type="text" id="username" name="username" required inputmode="numeric" pattern="[0-9]*">
             </div> <br> 
             <div class="input-group">
-                <label for="username">Email:</label>
+                <label for="Email">Email:</label>
                 <input type="text" id="Email" name="Email" required>
             </div> <br> 
             <div class="input-group">
@@ -93,7 +94,7 @@
             </div>
             <button type="submit" class="login-button">Login</button>
             <div class="signup">
-                <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                <p>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></p>
 
             </div>
         </form>
