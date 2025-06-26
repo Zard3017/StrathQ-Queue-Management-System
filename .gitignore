@@ -1,0 +1,18 @@
+# Ignore Python virtual environments
+.venv/
+env/
+
+# Byte-compiled files
+*.pyc
+__pycache__/
+
+# Django migration history
+*.sqlite3
+
+# IDE/editor settings
+.vscode/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
