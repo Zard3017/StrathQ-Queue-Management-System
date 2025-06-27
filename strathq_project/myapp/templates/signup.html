@@ -76,15 +76,27 @@
     </style>
 </head>
 <body>
+    {% load static %}
     <div class="login-container">
         <h2 style="font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; font-size: 30px;" >StrathQ</h2>
-        <form action="/login" method="POST">  <!--HTTP POST method FOR sending data in a secure manner-->
+        {% if messages %}
+         <div class="messages" style="margin-bottom: 15px;">
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert" style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; text-align: center;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form action="{% url 'signup' %}" method="POST">  <!--HTTP POST method FOR sending data in a secure manner-->
+            {% csrf_token %}
              <div class="input-group">
                 <label for="username">Username (Student/Staff ID Number):</label>
                 <input type="text" id="username" name="username" required inputmode="numeric" pattern="[0-9]*">
             </div> <br> 
             <div class="input-group">
-                <label for="username">Email:</label>
+                <label for="Email">Email:</label>
                 <input type="text" id="Email" name="Email" required>
             </div> <br> 
 
