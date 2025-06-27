@@ -24,16 +24,16 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">IT Helpdesk</h5>
-                        <p class="card-text">For all your technical support needs, from password resets to software issues.</p>
+                        <h5 class="card-title">SCES Helpdesk</h5>
+                       
                         <div class="mt-auto">
                             <label for="it-service" class="form-label">Select a service:</label>
                             <select class="form-select mb-3" id="it-service">
                                 <option selected disabled>Choose a service...</option>
-                                <option value="password-reset">Password Reset</option>
-                                <option value="software-install">Software Installation</option>
-                                <option value="hardware-issue">Hardware Issue</option>
-                                <option value="network-connectivity">Network Connectivity</option>
+                                <option value="password-reset">General Consultation</option>
+                                <option value="software-install">Laptop Collection</option>
+                                <option value="hardware-issue">Units Registration Queries</option>
+                                
                             </select>
                             <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join IT Queue</a>
                         </div>
@@ -45,6 +45,7 @@
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
+                        
                         <h5 class="card-title">Registration</h5>
                         <p class="card-text">Assistance with course registration, payments, and student records.</p>
                         <div class="mt-auto">
@@ -60,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
 
             <!-- Lecturer Consultation Card -->
             <div class="col-lg-4 col-md-6 mb-4">

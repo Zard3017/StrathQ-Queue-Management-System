@@ -1,12 +1,27 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.shortcuts import authenticate
+from django.contrib import messages
 
 # Create your views here.
 def login(request):
     if request.method == 'POST':
+        # Get the username and password from the form
         username = request.POST.get('username')
         password = request.POST.get('password')
-        return render(request, 'role_selection.html', {'username': username, 'password': password})
-    return render(request, 'login.html')
+
+        # Authenticate the user against the database
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            # User is authenticated, redirect to the student page
+            return redirect('student')
+        else:
+            # User is not authenticated, display an error message
+            messages.error(request, 'Invalid username or password')
+            return redirect('login')
+    else:
+        return render(request, 'login.html')
+    
    
 def signup(request):
     return render(request, 'signup.html')
