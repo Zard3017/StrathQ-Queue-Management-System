@@ -9,6 +9,5 @@ urlpatterns = [
     path('my_queues/', views.my_queues, name='my_queues'),
     path('staff/', views.staff, name='staff'),
     path('admin/', views.admin, name='admin'),
-    
-
+    path('logout/', views.logout_view, name='logout'),
 ]

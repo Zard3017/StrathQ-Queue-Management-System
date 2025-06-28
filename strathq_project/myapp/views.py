@@ -2,70 +2,79 @@ from django.shortcuts import render, redirect
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login , logout
+from .forms import SignupForm
+from django.contrib.auth.decorators import login_required
+from .models import Profile
 
 # Create your views here.
-def login(request):
-    if request.method == 'POST':
-        # Get the username and password from the form
-        username = request.POST.get('username')
-        password = request.POST.get('password')
 
-        # Authenticate the user against the database
-        user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            # User is authenticated, redirect to the student page
-            return redirect('student')
-        else:
-            # User is not authenticated, display an error message
-            messages.error(request, 'Invalid username or password')
-            return redirect('login')
-    else:
-        return render(request, 'login.html')
 
    
 def signup(request):
     if request.method == 'POST':
-        # Get the user data from the form
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = SignupForm()
+    return render(request, 'signup.html', {'form': form})
+
+def login_view(request):
+    if request.method == 'POST':
         username = request.POST.get('username')
-        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        #Validation
-        if not username or not email or not password:
-            messages.error(request, 'All fields are required.')
-            return redirect('signup')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, 'Username already exists.')
-            return redirect('signup')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, 'Email already exists.')
-            return redirect('signup')
-        try:
-            user = User.objects.create_user(username=username, email=email, password=password)
-            messages.success(request, 'Account created successfully.')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            role= user.profile.role
+            if role == 'student':
+                return redirect('student')
+            elif role == 'staff':
+                return redirect('staff')
+            elif role == 'admin':
+                return redirect('admin')
+            else:
+                return redirect('login')
+        else:
+            messages.error(request, 'Invalid username or password.')
+            return render(request, 'login.html')
+    @login_required
+    def student(request):
+        if request.user.profile.role != 'student':
             return redirect('login')
-        except Exception as e:
-            messages.error(request, 'An error occurred while creating the account.')
-            return redirect('signup')
+        else:
+            return render(request, 'student.html')
+    @login_required
+    def staff(request):
+        if request.user.profile.role != 'staff':
+            return redirect('login')
+        else:
+            return render(request, 'staff.html')
+    def logout_view(request):
+        logout(request)
+        return redirect('login')
+    return render(request, 'login.html')
 
-        
-    return render(request, 'signup.html')
+
 
 def student(request):
     return render(request, 'student.html')
-
-def join_queue(request):
-    return render(request, 'join_queue.html')
-
-def my_queues(request):
-    return render(request, 'my_queues.html')
 
 def staff(request):
     return render(request, 'staff.html')
 
 def admin(request):
     return render(request, 'admin.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+def join_queue(request):
+    return render(request, 'join_queue.html')
+
+def my_queues(request):
+    return render(request, 'my_queues.html')
+
