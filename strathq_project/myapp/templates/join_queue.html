@@ -22,12 +22,29 @@
         <div class="row">
             <!-- IT Helpdesk Card -->
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 shadow-sm" >
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">SCES Helpdesk</h5>
                        
                         <div class="mt-auto">
-                            <label for="it-service" class="form-label">Select a service:</label>
+                            <form action="{% url 'my_queues' %}" method="POST">
+                                {% csrf_token %}
+                                <label for="it-service" class="form-label">Select a service:</label>
+                                <select class="form-select mb-3 service-select" id="it-service" name="service" data-staff-container="#it-staff-list" data-join-button="#it-join-btn">
+                                    <option selected disabled value="">Choose a service...</option>
+                                    <option value="general-consultation">General Consultation</option>
+                                    <option value="laptop-collection">Laptop Collection</option>
+                                    <option value="units-registration">Units Registration Queries</option>
+                                </select>
+
+                                <!-- Staff list will be injected here by JavaScript -->
+                                <div class="staff-list-container mb-3" id="it-staff-list"></div>
+
+                                <input type="hidden" name="staff_id" class="selected-staff-id">
+
+                                <button type="submit" id="it-join-btn" class="btn btn-primary w-100" disabled>Join SCES Queue</button>
+                            </form>
+                            <!--<label for="it-service" class="form-label">Select a service:</label>
                             <select class="form-select mb-3" id="it-service">
                                 <option selected disabled>Choose a service...</option>
                                 <option value="password-reset">General Consultation</option>
@@ -35,7 +52,10 @@
                                 <option value="hardware-issue">Units Registration Queries</option>
                                 
                             </select>
-                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join IT Queue</a>
+                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join IT Queue</a> -->
+                            
+
+                            
                         </div>
                     </div>
                 </div>
@@ -43,13 +63,31 @@
 
             <!-- Registration Card -->
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 shadow-sm">
                     <div class="card-body d-flex flex-column">
                         
-                        <h5 class="card-title">Registration</h5>
+                        <h5 class="card-title">Administration</h5>
                         <p class="card-text">Assistance with course registration, payments, and student records.</p>
                         <div class="mt-auto">
-                            <label for="reg-service" class="form-label">Select a service:</label>
+                            <form action="{% url 'my_queues' %}" method="POST">
+                                {% csrf_token %}
+                                <label for="reg-service" class="form-label">Select a service:</label>
+                                <select class="form-select mb-3 service-select" id="reg-service" name="service" data-staff-container="#reg-staff-list" data-join-button="#reg-join-btn">
+                                    <option selected disabled value="">Choose a service...</option>
+                                    <option value="course-registration">Course Registration</option>
+                                    <option value="fee-payment">Fee Payment</option>
+                                    <option value="transcript-request">Transcript Request</option>
+                                    <option value="student-id">Student ID Card</option>
+                                </select>
+
+                                <!-- Staff list will be injected here by JavaScript -->
+                                <div class="staff-list-container mb-3" id="reg-staff-list"></div>
+
+                                <input type="hidden" name="staff_id" class="selected-staff-id">
+
+                                <button type="submit" id="reg-join-btn" class="btn btn-primary w-100" disabled>Join Administration Queue</button>
+                            </form>
+                            <!--<label for="reg-service" class="form-label">Select a service:</label>
                             <select class="form-select mb-3" id="reg-service">
                                 <option selected disabled>Choose a service...</option>
                                 <option value="course-registration">Course Registration</option>
@@ -57,7 +95,7 @@
                                 <option value="transcript-request">Transcript Request</option>
                                 <option value="student-id">Student ID Card</option>
                             </select>
-                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join Registration Queue</a>
+                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join Registration Queue</a> -->
                         </div>
                     </div>
                 </div>
@@ -65,12 +103,31 @@
 
             <!-- Lecturer Consultation Card -->
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
+                <div class="card h-100 shadow-sm">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">Lecturer Consultation</h5>
                         <p class="card-text">Book a time to discuss assignments, projects, or academic progress with a lecturer.</p>
                         <div class="mt-auto">
-                            <label for="lec-service" class="form-label">Select a service:</label>
+
+                             <form action="{% url 'my_queues' %}" method="POST">
+                                {% csrf_token %}
+                                <label for="lec-service" class="form-label">Select a service:</label>
+                                <select class="form-select mb-3 service-select" id="lec-service" name="service" data-staff-container="#lec-staff-list" data-join-button="#lec-join-btn">
+                                    <option selected disabled value="">Choose a service...</option>
+                                    <option value="assignment-query">Assignment Query</option>
+                                    <option value="project-discussion">Project Discussion</option>
+                                    <option value="exam-review">Exam Review</option>
+                                    <option value="general-consult">General Consultation</option>
+                                </select>
+
+                                <!-- Staff list will be injected here by JavaScript -->
+                                <div class="staff-list-container mb-3" id="lec-staff-list"></div>
+
+                                <input type="hidden" name="staff_id" class="selected-staff-id">
+
+                                <button type="submit" id="lec-join-btn" class="btn btn-primary w-100" disabled>Join Consultation Queue</button>
+                            </form>
+                            <!--<label for="lec-service" class="form-label">Select a service:</label>
                             <select class="form-select mb-3" id="lec-service">
                                 <option selected disabled>Choose a service...</option>
                                 <option value="assignment-query">Assignment Query</option>
@@ -78,7 +135,7 @@
                                 <option value="exam-review">Exam Review</option>
                                 <option value="general-consult">General Consultation</option>
                             </select>
-                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join Consultation Queue</a>
+                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join Consultation Queue</a> -->
                         </div>
                     </div>
                 </div>
@@ -86,8 +143,107 @@
         </div>
     </div>
 
+
+
+
+
+    
+
     <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- SIMULATED API DATA ---
+        // In a real application, you would fetch this data from your Django backend.
+        const staffData = {
+            // SCES Helpdesk Services
+            'general-consultation': [
+                { id: 101, name: 'John Doe', status: 'online' },
+                { id: 102, name: 'Peter Jones', status: 'unavailable' },
+            ],
+            'laptop-collection': [
+                { id: 103, name: 'Jane Smith', status: 'online' },
+            ],
+            'units-registration': [
+                { id: 101, name: 'John Doe', status: 'online' },
+                { id: 104, name: 'Mary Anne', status: 'online' },
+                { id: 102, name: 'Peter Jones', status: 'unavailable' },
+            ],
+            // Administration Services
+            'course-registration': [ { id: 201, name: 'Admin Alice', status: 'online' }, ],
+            'fee-payment': [
+                { id: 202, name: 'Finance Fred', status: 'online' },
+                { id: 203, name: 'Finance Fiona', status: 'unavailable' },
+            ],
+            'transcript-request': [ { id: 201, name: 'Admin Alice', status: 'online' }, ],
+            'student-id': [ { id: 204, name: 'Security Sam', status: 'online' }, ],
+            // Lecturer Consultation Services
+            'assignment-query': [
+                { id: 301, name: 'Dr. Evelyn Reed', status: 'online' },
+                { id: 302, name: 'Prof. Alan Grant', status: 'unavailable' },
+            ],
+            'project-discussion': [ { id: 303, name: 'Dr. Ian Malcolm', status: 'online' }, ],
+            'exam-review': [
+                { id: 301, name: 'Dr. Evelyn Reed', status: 'online' },
+                { id: 302, name: 'Prof. Alan Grant', status: 'unavailable' },
+            ],
+            'general-consult': [
+                { id: 301, name: 'Dr. Evelyn Reed', status: 'online' },
+                { id: 303, name: 'Dr. Ian Malcolm', status: 'online' },
+            ]
+        };
+
+        document.querySelectorAll('.service-select').forEach(select => {
+            select.addEventListener('change', function() {
+                const serviceValue = this.value;
+                const staffContainer = document.querySelector(this.dataset.staffContainer);
+                const joinButton = document.querySelector(this.dataset.joinButton);
+                const hiddenStaffIdInput = this.closest('form').querySelector('.selected-staff-id');
+
+                // Reset state
+                staffContainer.innerHTML = '';
+                joinButton.disabled = true;
+                hiddenStaffIdInput.value = '';
+
+                const staffList = staffData[serviceValue] || [];
+
+                if (staffList.length > 0) {
+                    let staffHtml = '<p class="form-label mb-1">Select available staff:</p><div class="list-group">';
+                    staffList.forEach(staff => {
+                        const isAvailable = staff.status === 'online';
+                        const disabledAttr = isAvailable ? '' : 'disabled';
+                        const statusClass = isAvailable ? 'text-success' : 'text-muted';
+                        const statusText = isAvailable ? 'Online' : 'Unavailable';
+
+                        staffHtml += `
+                            <label class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                <div>
+                                    <input class="form-check-input me-2" type="radio" name="staff_selection" value="${staff.id}" ${disabledAttr}>
+                                    ${staff.name}
+                                </div>
+                                <span class="badge bg-light ${statusClass} rounded-pill">${statusText}</span>
+                            </label>
+                        `;
+                    });
+                    staffHtml += '</div>';
+                    staffContainer.innerHTML = staffHtml;
+
+                    staffContainer.addEventListener('change', e => {
+                        if (e.target.name === 'staff_selection') {
+                            hiddenStaffIdInput.value = e.target.value;
+                            joinButton.disabled = false;
+                        }
+                    });
+                } else if (serviceValue) {
+                    staffContainer.innerHTML = '<div class="alert alert-warning p-2" role="alert">No staff available for this service.</div>';
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>
 
