@@ -60,3 +60,19 @@ class Notification(models.Model):
     def __str__(self):
         return f"To: {self.recipient.username} - {self.message[:30]}..."
 
+
+class QueueEntry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100)
+    service = models.CharField(max_length=100)
+    join_time = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=[('waiting', 'Waiting'), ('completed', 'Completed'), ('left', 'Left')], default='waiting')
+
+    def position_in_queue(self):
+        ahead = QueueEntry.objects.filter(
+            department=self.department,
+            service=self.service,
+            status='waiting',
+            join_time__lt=self.join_time
+        ).count()
+        return ahead + 1

@@ -4,90 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Queue - StrathQ</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 {% load static %}
 
-    <div class="container my-5">
-        <!-- Back to Dashboard Button -->
-        <a href="{% url 'student' %}" class="btn btn-outline-secondary mb-4">&larr; Back to Dashboard</a>
+<div class="container my-5">
+    <a href="{% url 'student' %}" class="btn btn-outline-secondary mb-4">&larr; Back to Dashboard</a>
 
-        <header class="text-center mb-5">
-            <h1>Join a Queue</h1>
-            <p class="lead">Select a department and service to join the queue.</p>
-        </header>
+    <header class="text-center mb-5">
+        <h1>Join a Queue</h1>
+        <p class="lead">Select a department and service to join the queue.</p>
+    </header>
 
-        <div class="row">
-            <!-- IT Helpdesk Card -->
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">SCES Helpdesk</h5>
-                       
-                        <div class="mt-auto">
-                            <label for="it-service" class="form-label">Select a service:</label>
-                            <select class="form-select mb-3" id="it-service">
-                                <option selected disabled>Choose a service...</option>
-                                <option value="password-reset">General Consultation</option>
-                                <option value="software-install">Laptop Collection</option>
-                                <option value="hardware-issue">Units Registration Queries</option>
-                                
-                            </select>
-                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join IT Queue</a>
-                        </div>
-                    </div>
+    <div class="row">
+        <!-- SCES Helpdesk Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">SCES Helpdesk</h5>
+                    <form method="post" action="{% url 'join_queue' %}" class="mt-auto">
+                        {% csrf_token %}
+                        <input type="hidden" name="department" value="SCES Helpdesk">
+                        <label for="it-service" class="form-label">Select a service:</label>
+                        <select name="service" class="form-select mb-3" required>
+                            <option value="" disabled selected>Choose a service...</option>
+                            <option value="General Consultation">General Consultation</option>
+                            <option value="Laptop Collection">Laptop Collection</option>
+                            <option value="Units Registration Queries">Units Registration Queries</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Join IT Queue</button>
+                    </form>
                 </div>
             </div>
+        </div>
 
-            <!-- Registration Card -->
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        
-                        <h5 class="card-title">Registration</h5>
-                        <p class="card-text">Assistance with course registration, payments, and student records.</p>
-                        <div class="mt-auto">
-                            <label for="reg-service" class="form-label">Select a service:</label>
-                            <select class="form-select mb-3" id="reg-service">
-                                <option selected disabled>Choose a service...</option>
-                                <option value="course-registration">Course Registration</option>
-                                <option value="fee-payment">Fee Payment</option>
-                                <option value="transcript-request">Transcript Request</option>
-                                <option value="student-id">Student ID Card</option>
-                            </select>
-                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join Registration Queue</a>
-                        </div>
-                    </div>
+        <!-- Registration Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Registration</h5>
+                    <form method="post" action="{% url 'join_queue' %}" class="mt-auto">
+                        {% csrf_token %}
+                        <input type="hidden" name="department" value="Registration">
+                        <label class="form-label">Select a service:</label>
+                        <select name="service" class="form-select mb-3" required>
+                            <option value="" disabled selected>Choose a service...</option>
+                            <option value="Course Registration">Course Registration</option>
+                            <option value="Fee Payment">Fee Payment</option>
+                            <option value="Transcript Request">Transcript Request</option>
+                            <option value="Student ID Card">Student ID Card</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Join Registration Queue</button>
+                    </form>
                 </div>
-            </div> 
+            </div>
+        </div>
 
-            <!-- Lecturer Consultation Card -->
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">Lecturer Consultation</h5>
-                        <p class="card-text">Book a time to discuss assignments, projects, or academic progress with a lecturer.</p>
-                        <div class="mt-auto">
-                            <label for="lec-service" class="form-label">Select a service:</label>
-                            <select class="form-select mb-3" id="lec-service">
-                                <option selected disabled>Choose a service...</option>
-                                <option value="assignment-query">Assignment Query</option>
-                                <option value="project-discussion">Project Discussion</option>
-                                <option value="exam-review">Exam Review</option>
-                                <option value="general-consult">General Consultation</option>
-                            </select>
-                            <a href="{% url 'my_queues' %}" class="btn btn-primary w-100">Join Consultation Queue</a>
-                        </div>
-                    </div>
+        <!-- Lecturer Consultation Card -->
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Lecturer Consultation</h5>
+                    <form method="post" action="{% url 'join_queue' %}" class="mt-auto">
+                        {% csrf_token %}
+                        <input type="hidden" name="department" value="Lecturer Consultation">
+                        <label class="form-label">Select a service:</label>
+                        <select name="service" class="form-select mb-3" required>
+                            <option value="" disabled selected>Choose a service...</option>
+                            <option value="Assignment Query">Assignment Query</option>
+                            <option value="Project Discussion">Project Discussion</option>
+                            <option value="Exam Review">Exam Review</option>
+                            <option value="General Consultation">General Consultation</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Join Consultation Queue</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

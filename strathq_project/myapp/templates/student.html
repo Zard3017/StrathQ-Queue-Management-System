@@ -327,8 +327,8 @@
 
                 </div>
                 <div>
-                    <p> <strong>Your position in the queue is:</strong> <span class="position-number">3</span>of 8</p>
-                    <p> <strong>Estimated wait time:</strong> <span class="wait-time">5 minutes</span></p>
+                    <p> <strong>Your position in the queue is:</strong> <span class="position-number" id="queue-position">—</span> of <span id="queue-total">—</span></p>
+                    <p> <strong>Estimated wait time:</strong> <span class="wait-time" id="estimated-wait">—</span></p>
                 </div>
                 <div class="card-footer">
                     <button class="leave-queue-button">Leave Queue</button>
@@ -370,6 +370,25 @@
                 }
             });
         });
+
+        // Function to fetch queue status
+        async function updateQueueStatus() {
+        try {
+            const response = await fetch("{% url 'queue_status' %}");
+            if (!response.ok) throw new Error('Failed to fetch');
+
+            const data = await response.json();
+            document.getElementById('queue-position').textContent = data.position;
+            document.getElementById('queue-total').textContent = data.total;
+            document.getElementById('estimated-wait').textContent = data.estimated_wait;
+        } catch (err) {
+            console.error('Queue status update failed:', err);
+        }
+    }
+
+    // Initial fetch + polling every 15 seconds
+    updateQueueStatus();
+    setInterval(updateQueueStatus, 15000);
     </script>
 </body>
 </html>
