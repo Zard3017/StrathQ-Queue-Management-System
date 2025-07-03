@@ -70,7 +70,9 @@ def logout_view(request):
 
 @login_required
 def join_queue(request):
-    return render(request, 'join_queue.html')
+    
+     return render(request, 'join_queue.html', )
+         
 
 @login_required
 def my_queues(request):
