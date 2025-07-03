@@ -186,6 +186,57 @@
         .dashboard-content {
             padding: 20px;
         }
+        .service-section {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px var(--shadow-color);
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+
+        .service-section h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .approve-btn {
+            background-color: #28a745;
+        }
+
+        .decline-btn {
+            background-color: #dc3545;
+        }
+
+        .no-queues {
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -207,7 +258,7 @@
                 <div class="user-profile" id="user-profile-menu">
                     <button class="user-button">
                         <span class="user-avatar">👤</span>
-                        <span class="user-name">Bradley Lusalenge</span>
+                        <span class="user-name">{{request.user.username}}</span>
                         <span class="dropdown-arrow">▾</span>
                     </button>
                     <div class="dropdown-content">
@@ -224,34 +275,70 @@
         
     </main>
 
+    <h2>Welcome, {{ request.user.username }} (Staff)</h2>
+
+<div>
+    <label for="statusFilter"><strong>Filter Queues:</strong></label>
+    <select id="statusFilter">
+        <option value="all">All</option>
+        <option value="active">Active</option>
+        <option value="completed">Completed</option>
+        <option value="left">Left</option>
+    </select>
+</div>
+
+{% for service in services %}
+    <div class="service-section">
+        <h3>{{ service.name }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Status</th>
+                    <th>Joined At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for queue in queues %}
+                    {% if queue.service == service %}
+                        <tr class="queue-row" data-status="{{ queue.status }}">
+                            <td>{{ queue.student.username }}</td>
+                            <td>{{ queue.get_status_display }}</td>
+                            <td>{{ queue.joined_at|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                {% if queue.status == 'active' %}
+                                    <a href="{% url 'update_queue_status' queue.id 'completed' %}" class="action-btn approve-btn">Approve</a>
+                                    <a href="{% url 'update_queue_status' queue.id 'left' %}" class="action-btn decline-btn">Decline</a>
+                                {% else %}
+                                    <em>{{ queue.get_status_display }}</em>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endfor %}
+
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const hamburger = document.getElementById('hamburger-menu');
-            const navLinks = document.getElementById('navbar-links');
-            const userProfileMenu = document.getElementById('user-profile-menu');
+        // Add queue filtering
+const statusFilter = document.getElementById('statusFilter');
+statusFilter.addEventListener('change', function () {
+    const selectedStatus = this.value;
+    const rows = document.querySelectorAll('.queue-row');
+    rows.forEach(row => {
+        const rowStatus = row.getAttribute('data-status');
+        if (selectedStatus === 'all' || selectedStatus === rowStatus) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
 
-            // mobile navigation
-            hamburger.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-            });
-
-            //user profile dropdown
-            userProfileMenu.addEventListener('click', (event) => {
-                event.stopPropagation(); // Prevent window click event from firing
-                const dropdown = userProfileMenu.querySelector('.dropdown-content');
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // close dropdown if clicking outside of it
-            window.addEventListener('click', (event) => {
-                const dropdown = userProfileMenu.querySelector('.dropdown-content');
-                if (dropdown && dropdown.style.display === 'block') {
-                    if (!userProfileMenu.contains(event.target)) {
-                        dropdown.style.display = 'none';
-                    }
-                }
-            });
-        });
     </script>
 </body>
 </html>

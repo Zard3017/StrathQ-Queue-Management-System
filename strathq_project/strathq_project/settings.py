@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'strathq_db',
         'USER': 'postgres',           
-        'PASSWORD': 'postgres',  
+        'PASSWORD': 'Karari2004$',  
         'HOST': 'localhost',
         'PORT': '5432',
     }
