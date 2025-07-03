@@ -17,6 +17,7 @@ class Profile(models.Model):
     # Creates a one-to-one link with a User. If a User is deleted, their Profile is also deleted.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
+    is_online = models.BooleanField(default=False)
 
     def __str__(self):
         # The User model already has username, email, first_name, last_name.
@@ -28,7 +29,8 @@ class Service(models.Model):
     name = models.CharField(max_length=100)
     # A service can be managed by a staff member.
     # limit_choices_to ensures you can only select users with the 'staff' role.
-    managed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'profile__role': 'staff'})
+    staff_members = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'profile__role': 'staff'})
+
 
     def __str__(self):
         return self.name
