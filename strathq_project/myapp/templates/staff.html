@@ -170,7 +170,7 @@
             {% for queue in queues %}
               <tr class="queue-row" data-status="{{ queue.status }}">
                 <td>{{ queue.position }}</td>
-                <td>{{ queue.student.name }}</td>
+                <td>{{ queue.student.first_name }} {{ queue.student.last_name }}</td>
                 <td>{{ queue.service.name }}</td>
                 <td>{{ queue.joined_at }}</td>
                 <td>
