@@ -159,11 +159,12 @@ def admin(request):
 
 
 def logout_view(request):
-    logout(request)
+    request.session.flush()  # Clears all session data
     return redirect('login')
 
-
 def join_queue(request):
+    if request.session.get('role') != 'student':
+        return redirect('login')
     selected_department = request.GET.get('department')
     selected_service = request.GET.get('service')
 
