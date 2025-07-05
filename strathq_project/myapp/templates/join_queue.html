@@ -102,6 +102,47 @@
       </div>
     </div>
 
+     <!-- Lecturer Consultation Join Queue Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">Lecturer Consultation</h5>
+
+          <!-- Step 1: Select Service -->
+          <form method="get" action="">
+            <input type="hidden" name="department" value="Lecturer Consultation">
+            <label for="admin-service" class="form-label">Select a service:</label>
+            <select class="form-select mb-3" name="service" id="admin-service" onchange="this.form.submit()">
+              <option value="" disabled {% if not selected_service %}selected{% endif %}>Choose a service...</option>
+              <option value="Assignment Query" {% if selected_service == 'Assignment Query' %}selected{% endif %}>Assignment Query</option>
+              <option value="Project Assistance" {% if selected_service == 'Project Assistance' %}selected{% endif %}>Project Assistance</option>
+              <option value="General Lecturer Consultation" {% if selected_service == 'General Lecturer Consultation' %}selected{% endif %}></option>
+            </select>
+          </form>
+
+          <!-- Step 2: Show online staff -->
+          {% if selected_service and selected_department == 'Lecturer Consultation' %}
+            {% if admin_online_staff %}
+              <form method="post" action="{% url 'enqueue' %}">
+                {% csrf_token %}
+                <input type="hidden" name="service" value="{{ selected_service }}">
+                <label for="staff">Select a staff:</label>
+                <select class="form-select mb-3" name="staff_id" id="staff" required>
+                  {% for staff in admin_online_staff %}
+                    <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary w-100">Join Admin Queue</button>
+              </form>
+            {% else %}
+              <p class="text-muted">No staff currently online for this service.</p>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+
   </div> <!-- /.row -->
 
 </div> <!-- /.container -->

@@ -171,6 +171,8 @@ def join_queue(request):
     services = Service.objects.all()
     admin_online_staff = Staff.objects.filter(department='Administration', status='online') if selected_department == 'Administration' else []
     sces_online_staff = Staff.objects.filter(department='SCES Helpdesk', status='online') if selected_department == 'SCES Helpdesk' else []
+    lecturer_online_staff = Staff.objects.filter(department='Lecturer Consultation', status='online') if selected_department == 'Lecturer Consultation' else []
+
 
     context = {
         'services': services,
@@ -178,6 +180,7 @@ def join_queue(request):
         'selected_service': selected_service,
         'admin_online_staff': admin_online_staff,
         'sces_online_staff': sces_online_staff,
+        'lecturer_online_staff': lecturer_online_staff
     }
     return render(request, 'join_queue.html', context)
 
@@ -275,10 +278,14 @@ def update_status(request):
 
 
 def enqueue(request):
+    if request.session.get('role') != 'student':
+        return redirect('login') 
+
     if request.method == 'POST':
         student_id = request.session.get('user_id')
         service_name = request.POST.get('service')
         staff_id = request.POST.get('staff_id')
+        
         if not all([student_id, service_name, staff_id]):
             messages.error(request, "Missing information. Please try again.")
             return redirect('join_queue')
