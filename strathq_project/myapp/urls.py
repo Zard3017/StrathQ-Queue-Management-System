@@ -14,6 +14,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('queue_status/', views.get_queue_status, name='queue_status'),
     path('toggle_availability/', views.toggle_availability, name='toggle_availability'),
+    path('api/staff/<int:service_id>/', views.get_staff_by_service, name='get_staff_by_service'),
 
     
 ]
