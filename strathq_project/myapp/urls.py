@@ -12,5 +12,8 @@ urlpatterns = [
     path('unauthorized/', views.unauthorized, name='unauthorized'),
     path('admin/', views.admin, name='admin'),
     path('logout/', views.logout_view, name='logout'),
+    path('queue_status/', views.get_queue_status, name='queue_status'),
+    path('toggle_availability/', views.toggle_availability, name='toggle_availability'),
+
     
 ]

@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'strathq_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'strathq_db',
+        'NAME': 'strathq',
         'USER': 'postgres',           
-        'PASSWORD': 'Karari2004$',  
+        'PASSWORD': 'postgres',  
         'HOST': 'localhost',
         'PORT': '5432',
     }

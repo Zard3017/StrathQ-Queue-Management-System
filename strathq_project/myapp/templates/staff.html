@@ -1,344 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - QueueEase</title>
-    <style>
-        :root {
-            --primary-color: #1e62b0;
-            --primary-hover: #0056b3;
-            --text-color-light: #fff;
-            --background-color: #f4f7f6;
-            --header-bg: #fff;
-            --border-color: #e9ecef;
-            --shadow-color: rgba(0, 0, 0, 0.1);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Dashboard</title>
+  <style>
+    :root {
+      --primary-color: #1e62b0;
+      --primary-hover: #0056b3;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --text-light: #fff;
+      --bg-color: #f4f7f6;
+      --border: #e0e0e0;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
-            background-color: var(--background-color);
-            color: #333;
-        }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg-color);
+      color: #333;
+    }
 
-        .main-header {
-            background-color: var(--header-bg);
-            box-shadow: 0 2px 4px var(--shadow-color);
-            position: sticky; /* Make the header stick to the same position*/
-            top: 0;
-            z-index: 1000;
-        }
+    header {
+      background: #fff;
+      padding: 15px 25px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            height: 60px;
-        }
+    .logo {
+      font-size: 1.6em;
+      color: var(--primary-color);
+      font-weight: bold;
+      text-decoration: none;
+    }
 
-        .navbar-left {
-            display: flex;
-            align-items: center;
-        }
+    .logout-button {
+      background: var(--primary-color);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
 
-        .navbar-left .logo {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
+    main {
+      padding: 30px;
+    }
 
-        .navbar-center {
-            display: flex;
-            gap: 25px;
-        }
+    h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+    }
 
-        .navbar-center a {
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            padding: 5px 0;
-            border-bottom: 2px solid transparent;
-            transition: color 0.3s, border-color 0.3s;
-        }
+    .managed-services, .active-queue {
+      background: white;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
-        .navbar-center a:hover, .navbar-center a.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
+    ul {
+      padding-left: 20px;
+    }
 
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
 
-        .nav-icon {
-            font-size: 1.5em;
-            color: #555;
-            text-decoration: none;
-            cursor: pointer;
-        }
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
 
-        .user-profile {
-            position: relative;
-        }
+    th {
+      background-color: var(--primary-color);
+      color: white;
+    }
 
-        .user-button {
-            display: flex;
-            align-items: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-            gap: 8px;
-        }
+    .action-btn {
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: white;
+      margin-right: 5px;
+    }
 
-        .user-avatar {
-            font-size: 1.5em;
-        }
+    .approve-btn {
+      background-color: var(--success-color);
+    }
 
-        .dropdown-arrow {
-            font-size: 0.8em;
-        }
+    .decline-btn {
+      background-color: var(--danger-color);
+    }
 
-        .user-profile .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 120%;
-            background-color: var(--header-bg);
-            min-width: 160px;
-            box-shadow: 0 8px 16px var(--shadow-color);
-            border-radius: 4px;
-            overflow: hidden;
-        }
+    .filter-container {
+      margin-top: 20px;
+    }
 
-        .user-profile .dropdown-content a {
-            color: #333;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .user-profile .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
-        .logout-button {
-            background-color: var(--primary-color);
-            color: var(--text-color-light);
-            padding: 8px 15px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
-
-        .logout-button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .hamburger {
-            display: none; /* Hidden on desktop */
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 24px;
-            margin-right: 15px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 850px) {
-            .navbar-center, .logout-button {
-                display: none; /* Hide center links and logout button */
-            }
-
-            .hamburger {
-                display: block; /* Show hamburger */
-                order: -1; /* Move it to the left of the logo */
-            }
-
-            .navbar-center.active {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 60px; /* Below the header */
-                left: 0;
-                width: 100%;
-                background-color: var(--header-bg);
-                box-shadow: 0 2px 4px var(--shadow-color);
-                padding: 10px 0;
-                gap: 0;
-            }
-
-            .navbar-center.active a {
-                padding: 15px 20px;
-                border-bottom: 1px solid var(--border-color);
-            }
-            .navbar-center.active a:hover {
-                background-color: #f1f1f1;
-            }
-        }
-
-        .dashboard-content {
-            padding: 20px;
-        }
-        .service-section {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px var(--shadow-color);
-            margin-bottom: 30px;
-            padding: 20px;
-        }
-
-        .service-section h3 {
-            margin-top: 0;
-            color: var(--primary-color);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-            text-align: left;
-        }
-
-        th {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        .approve-btn {
-            background-color: #28a745;
-        }
-
-        .decline-btn {
-            background-color: #dc3545;
-        }
-
-        .no-queues {
-            color: #666;
-        }
-    </style>
+    .no-queues {
+      color: #666;
+      text-align: center;
+      padding: 20px 0;
+    }
+  </style>
 </head>
 <body>
-    <header class="main-header">
-        <nav class="navbar">
-            <div class="navbar-left">
-                <button class="hamburger" id="hamburger-menu" aria-label="Menu">&#9776;</button>
-                <a href="#" class="logo">Strath Q</a>
-            </div>
 
-            <div class="navbar-center" id="navbar-links">
-                <a href="#" class="active">Home</a>
-                <a href="#">View Queue</a>
-                <a href="#"></a>
-            </div>
+  <header>
+    <a href="#" class="logo">Strath Q</a>
+    <div>
+      Welcome, {{ staff.first_name }}!
+      <a href="{% url 'logout' %}" class="logout-button">Logout</a>
+    </div>
+  </header>
 
-            <div class="navbar-right">
-                <a href="#" class="nav-icon" aria-label="Notifications">🔔</a>
-                <div class="user-profile" id="user-profile-menu">
-                    <button class="user-button">
-                        <span class="user-avatar">👤</span>
-                        <span class="user-name">{{request.user.username}}</span>
-                        <span class="dropdown-arrow">▾</span>
-                    </button>
-                    <div class="dropdown-content">
-                        
-                        <a href="#">Settings</a>
-                    </div>
-                </div>
-                <a href="/logout" class="logout-button">Logout</a>
-            </div>
-        </nav>
-    </header>
+  <main>
+    <h2>Staff Dashboard</h2>
 
-    <main class="dashboard-content">
-        
-    </main>
+    <!--Button to toggle availability-->
+    <form method="post" action="{% url 'toggle_availability' %}">
+    {% csrf_token %}
+    {% if staff.is_available %}
+        <button class="btn btn-success">Available (Click to go Offline)</button>
+    {% else %}
+        <button class="btn btn-danger">Unavailable (Click to go Online)</button>
+    {% endif %}
+</form>
 
-    <h2>Welcome, {{ request.user.username }} (Staff)</h2>
 
-<div>
-    <label for="statusFilter"><strong>Filter Queues:</strong></label>
-    <select id="statusFilter">
+    <!-- Managed Services -->
+    <div class="managed-services">
+      <h3>Managed Services</h3>
+      {% if services %}
+        <ul>
+          {% for service in services %}
+            <li>{{ service.name }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>You are not assigned to any services.</p>
+      {% endif %}
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-container">
+      <label for="statusFilter"><strong>Filter Queues:</strong></label>
+      <select id="statusFilter">
         <option value="all">All</option>
         <option value="active">Active</option>
         <option value="completed">Completed</option>
-        <option value="left">Left</option>
-    </select>
-</div>
-
-{% for service in services %}
-    <div class="service-section">
-        <h3>{{ service.name }}</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Status</th>
-                    <th>Joined At</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for queue in queues %}
-                    {% if queue.service == service %}
-                        <tr class="queue-row" data-status="{{ queue.status }}">
-                            <td>{{ queue.student.username }}</td>
-                            <td>{{ queue.get_status_display }}</td>
-                            <td>{{ queue.joined_at|date:"Y-m-d H:i" }}</td>
-                            <td>
-                                {% if queue.status == 'active' %}
-                                    <a href="{% url 'update_queue_status' queue.id 'completed' %}" class="action-btn approve-btn">Approve</a>
-                                    <a href="{% url 'update_queue_status' queue.id 'left' %}" class="action-btn decline-btn">Decline</a>
-                                {% else %}
-                                    <em>{{ queue.get_status_display }}</em>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
+        <option value="removed">Removed</option>
+      </select>
     </div>
-{% endfor %}
 
+    <!-- Active Queue -->
+    <div class="active-queue">
+      <h3>Active Queue</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Student Name</th>
+            <th>Service</th>
+            <th>Time Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if queues %}
+            {% for queue in queues %}
+              <tr class="queue-row" data-status="{{ queue.status }}">
+                <td>{{ queue.position }}</td>
+                <td>{{ queue.student.name }}</td>
+                <td>{{ queue.service.name }}</td>
+                <td>{{ queue.joined_at }}</td>
+                <td>
+                  <a href="{% url 'update_queue_status' queue.id 'completed' %}" class="action-btn approve-btn">Mark as Completed</a>
+                  <a href="{% url 'update_queue_status' queue.id 'removed' %}" class="action-btn decline-btn">Remove</a>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="5" class="no-queues">No students are currently in the queue.</td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </main>
 
-    <script>
-        // Add queue filtering
-const statusFilter = document.getElementById('statusFilter');
-statusFilter.addEventListener('change', function () {
-    const selectedStatus = this.value;
-    const rows = document.querySelectorAll('.queue-row');
-    rows.forEach(row => {
+  <script>
+    const statusFilter = document.getElementById('statusFilter');
+    statusFilter.addEventListener('change', function () {
+      const selectedStatus = this.value;
+      const rows = document.querySelectorAll('.queue-row');
+      rows.forEach(row => {
         const rowStatus = row.getAttribute('data-status');
-        if (selectedStatus === 'all' || selectedStatus === rowStatus) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+        row.style.display = (selectedStatus === 'all' || selectedStatus === rowStatus) ? '' : 'none';
+      });
     });
-});
-
-    </script>
+  </script>
 </body>
 </html>

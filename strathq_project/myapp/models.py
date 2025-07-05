@@ -1,39 +1,41 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.conf import settings
 
-# Create your models here.
-
-class Profile(models.Model):
-    """
-    Extends Django's built-in User model to add a role.
-    This single model replaces the need for separate Student, Staff, and Admin models.
-    """
-    ROLE_CHOICES = (
-        ('student', 'Student'),
-        ('staff', 'Staff'),
-        ('admin', 'Admin'),
-    )
-    # Creates a one-to-one link with a User. If a User is deleted, their Profile is also deleted.
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
-    is_online = models.BooleanField(default=False)
+class Student(models.Model):
+    student_id = models.CharField(max_length=20, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)  # In production, store hashed passwords
 
     def __str__(self):
-        # The User model already has username, email, first_name, last_name.
-        return f'{self.user.username} - {self.get_role_display()}'
+        return f"{self.first_name} {self.last_name} ({self.student_id})"
+
+
+class Staff(models.Model):
+    staff_id = models.CharField(max_length=20, unique=True)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
+    is_available = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.staff_id})"
 
 
 class Service(models.Model):
-    # Let Django handle the primary key automatically.
-    name = models.CharField(max_length=100)
-    # A service can be managed by a staff member.
-    # limit_choices_to ensures you can only select users with the 'staff' role.
-    staff_members = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, limit_choices_to={'profile__role': 'staff'})
+    DEPARTMENT_CHOICES = [
+        ('SCES Helpdesk', 'SCES Helpdesk'),
+        ('Administration', 'Administration'),
+        ('Lecturer Consultation', 'Lecturer Consultation'),
+        
+    ]
 
+    name = models.CharField(max_length=100)
+    department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
+    staff_members = models.ManyToManyField(Staff, related_name='services_offered')
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.department})"
+
 
 
 class Queue(models.Model):
@@ -42,39 +44,25 @@ class Queue(models.Model):
         ('completed', 'Completed'),
         ('left', 'Left'),
     )
+
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    # A single foreign key to the User model is much cleaner.
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='queue_tickets')
+    assigned_staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tickets')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
-    joined_at = models.DateTimeField(auto_now_add=True) # Automatically set when the queue is created.
-    served_at = models.DateTimeField(null=True, blank=True) # Can be set when the student is served.
+    joined_at = models.DateTimeField(auto_now_add=True)
+    served_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.service.name} - {self.student.username} ({self.get_status_display()})"
+        return f"{self.service.name} - {self.student.first_name} ({self.get_status_display()})"
 
 
 class Notification(models.Model):
-    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    recipient_student = models.ForeignKey(Student, on_delete=models.CASCADE, null=True, blank=True)
+    recipient_staff = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
     message = models.CharField(max_length=255)
     sent_at = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"To: {self.recipient.username} - {self.message[:30]}..."
-
-
-class QueueEntry(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    department = models.CharField(max_length=100)
-    service = models.CharField(max_length=100)
-    join_time = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=[('waiting', 'Waiting'), ('completed', 'Completed'), ('left', 'Left')], default='waiting')
-
-    def position_in_queue(self):
-        ahead = QueueEntry.objects.filter(
-            department=self.department,
-            service=self.service,
-            status='waiting',
-            join_time__lt=self.join_time
-        ).count()
-        return ahead + 1
+        recipient = self.recipient_student or self.recipient_staff
+        return f"To: {recipient} - {self.message[:30]}..."

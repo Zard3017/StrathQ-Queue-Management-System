@@ -94,14 +94,21 @@
             {% csrf_token %}
             
 
+            <!-- Staff-only Name Fields -->
              <div class="input-group">
-                <label for="username">Username (Student/Staff ID Number):</label>
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" required>
+            </div> <br>
+            <div class="input-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" required>
+            </div> <br>
+
+            <div class="input-group">
+                <label for="username">Student/Staff ID Number:</label>
                 <input type="text" id="username" name="username" required inputmode="numeric" pattern="[0-9]*">
             </div> <br> 
-           <!-- <div class="input-group">
-                <label for="Email">Email:</label>
-                <input type="text" id="Email" name="Email" required>
-            </div> <br>--> 
+          
 
             <div class="input-group">
                 <label for="password">Password:</label>
@@ -116,11 +123,6 @@
                 <option value="staff">Staff</option>
             </select>
         </div> <br>
-
-            
-
-
-
             <button type="submit" class="login-button">Sign Up</button>
             <div class="signup">
                 <p>Have an account? <a href="{% url 'login' %}">Log in.</a></p>
@@ -128,5 +130,19 @@
             </div>
         </form>
     </div>
+    
 </body>
+<script>
+    const roleSelect = document.getElementById('id_role');
+    const nameFields = document.getElementById('name-fields');
+
+    roleSelect.addEventListener('change', function () {
+        if (this.value === 'staff') {
+            nameFields.style.display = 'block';
+        } else {
+            nameFields.style.display = 'none';
+        }
+    });
+</script>
+
 </html>

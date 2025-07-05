@@ -44,10 +44,10 @@
         {% for queue in current_queues %}
         <div class="card mb-3">
             <div class="card-header">
-                {{ queue.department }}
+                {{ queue.service.name }}
             </div>
             <div class="card-body">
-                <p><strong>Service:</strong> {{ queue.service }}</p>
+                <p><strong>Service:</strong> {{ queue.service.name }}</p>
                 <p><strong>Your Position:</strong> <strong>{{ queue.position }}</strong> / {{ queue.total }}</p>
                 <p><strong>Estimated Wait:</strong> {{ queue.estimated_wait }} minutes</p>
                 <form method="POST" action="{% url 'leave_queue' queue.id %}">
@@ -71,23 +71,29 @@
         <table class="table table-bordered mt-3">
             <thead>
                 <tr>
-                    <th>Department</th>
                     <th>Service</th>
-                    <th>Date</th>
-                    <th>Wait Time</th>
+                    <th>Date Joined</th>
+                    <th>Time Served</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 {% for queue in past_queues %}
                 <tr>
-                    <td>{{ queue.department }}</td>
-                    <td>{{ queue.service }}</td>
-                    <td>{{ queue.date_joined|date:"Y-m-d" }}</td>
-                    <td>{{ queue.wait_time }} mins</td>
+                    <td>{{ queue.service.name }}</td>
+                    <td>{{ queue.joined_at|date:"Y-m-d H:i" }}</td>
                     <td>
-                        {% if queue.status == 'Completed' %}
+                        {% if queue.served_at %}
+                            {{ queue.served_at|time:"H:i" }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if queue.status == 'completed' %}
                             <span class="badge badge-success">Completed</span>
+                        {% elif queue.status == 'left' %}
+                            <span class="badge badge-secondary">Left</span>
                         {% else %}
                             <span class="badge badge-secondary">{{ queue.status }}</span>
                         {% endif %}
