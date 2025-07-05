@@ -20,6 +20,7 @@ urlpatterns = [
     path('enqueue/', views.enqueue, name='enqueue'),
     path('leave_queue/<int:queue_id>/', views.leave_queue, name='leave_queue'),
     path('queue/update/<int:queue_id>/<str:new_status>/', views.update_queue_status, name='update_queue_status'),
+    path('inbox/notifications/', include('notifications.urls', namespace='notifications')),
 
 
     
