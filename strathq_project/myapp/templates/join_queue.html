@@ -1,107 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Queue - StrathQ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Queue - StrathQ</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 {% load static %}
 
 <div class="container my-5">
-    <a href="{% url 'student' %}" class="btn btn-outline-secondary mb-4">&larr; Back to Dashboard</a>
+  <a href="{% url 'student' %}" class="btn btn-outline-secondary mb-4">&larr; Back to Dashboard</a>
 
-    <header class="text-center mb-5">
-        <h1>Join a Queue</h1>
-        <p class="lead">Select a department and service to join the queue.</p>
-    </header>
+  <header class="text-center mb-5">
+    <h1>Join a Queue</h1>
+    <p class="lead">Select a department and service to join the queue.</p>
+  </header>
 
-        <div class="row">
-           
+  <div class="row">
 
-            <!-- SCES Helpdesk Join Queue Card -->
-<div class="col-lg-4 col-md-6 mb-4">
-  <div class="card h-100">
-    <div class="card-body d-flex flex-column">
-      <h5 class="card-title">SCES Helpdesk</h5>
+    <!-- SCES Helpdesk Join Queue Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">SCES Helpdesk</h5>
 
-      <!-- Step 1: Select Service -->
-      <form method="get" action="">
-        <label for="service" class="form-label">Select a service:</label>
-        <select class="form-select mb-3" name="service" id="service" onchange="this.form.submit()">
-          <option disabled selected>Choose a service...</option>
-          {% for service in services %}
-            {% if service.department == 'SCES Helpdesk' %}
-              <option value="{{ service.name }}" {% if service.name == selected_service %}selected{% endif %}>
-                {{ service.name }}
-              </option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </form>
-      <!-- Step 2: Show online staff -->
-      {% if selected_service %}
-        {% if online_staff %}
-          <form method="post" action="{% url 'enqueue' %}">
-            {% csrf_token %}
-            <input type="hidden" name="service" value="{{ selected_service }}">
-            
-            <label for="staff" class="form-label">Select a staff:</label>
-            <select class="form-select mb-3" name="staff_id" id="staff" required>
-              {% for staff in online_staff %}
-                <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
+          <!-- Step 1: Select Service -->
+          <form method="get" action="">
+            <label for="service" class="form-label">Select a service:</label>
+            <select class="form-select mb-3" name="service" id="service" onchange="this.form.submit()">
+              <option value="" disabled {% if not selected_service %}selected{% endif %}>Choose a service...</option>
+              {% for service in services %}
+                {% if service.department == 'SCES Helpdesk' %}
+                  <option value="{{ service.name }}" {% if service.name == selected_service %}selected{% endif %}>
+                    {{ service.name }}
+                  </option>
+                {% endif %}
               {% endfor %}
             </select>
-
-            <button type="submit" class="btn btn-primary w-100">Join Queue</button>
+            <input type="hidden" name="department" value="SCES Helpdesk">
           </form>
-        {% else %}
-          <p class="text-muted">No staff currently online for this service.</p>
-        {% endif %}
-      {% endif %}
-    </div>
-  </div>
-</div>
 
-
-             <!-- 🔹 Administration Card -->
-      <div class="col-md-4 mb-4">
-        <div class="card h-100">
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">Administration</h5>
-            <form method="get" action="">
-              <input type="hidden" name="department" value="Administration">
-              <label class="form-label">Select a service:</label>
-              <select class="form-select mb-3" name="service" onchange="this.form.submit()">
-                <option disabled selected>Choose a service...</option>
-                <option value="Fee Payment" {% if selected_service == 'Fee Payment' %}selected{% endif %}>Fee Payment</option>
-                <option value="Course Registration" {% if selected_service == 'Course Registration' %}selected{% endif %}>Course Registration</option>
-              </select>
-            </form>
-            {% if selected_department == 'Administration' and selected_service %}
+          <!-- Step 2: Show online staff -->
+          {% if selected_service and selected_department == 'SCES Helpdesk' %}
+            {% if sces_online_staff %}
               <form method="post" action="{% url 'enqueue' %}">
                 {% csrf_token %}
                 <input type="hidden" name="service" value="{{ selected_service }}">
-                <label>Select Staff:</label>
-                <select name="staff_id" class="form-select mb-3" required>
-                  {% for staff in online_staff %}
+                <label for="staff">Select a staff:</label>
+                <select class="form-select mb-3" name="staff_id" id="staff" required>
+                  {% for staff in sces_online_staff %}
+                    <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
+                  {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-primary w-100">Join Queue</button>
+              </form>
+            {% else %}
+              <p class="text-muted">No staff currently online for this service.</p>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Administration Join Queue Card -->
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">Administration</h5>
+
+          <!-- Step 1: Select Service -->
+          <form method="get" action="">
+            <input type="hidden" name="department" value="Administration">
+            <label for="admin-service" class="form-label">Select a service:</label>
+            <select class="form-select mb-3" name="service" id="admin-service" onchange="this.form.submit()">
+              <option value="" disabled {% if not selected_service %}selected{% endif %}>Choose a service...</option>
+              <option value="Fee Payment" {% if selected_service == 'Fee Payment' %}selected{% endif %}>Fee Payment</option>
+              <option value="Course Registration" {% if selected_service == 'Course Registration' %}selected{% endif %}>Course Registration</option>
+            </select>
+          </form>
+
+          <!-- Step 2: Show online staff -->
+          {% if selected_service and selected_department == 'Administration' %}
+            {% if admin_online_staff %}
+              <form method="post" action="{% url 'enqueue' %}">
+                {% csrf_token %}
+                <input type="hidden" name="service" value="{{ selected_service }}">
+                <label for="staff">Select a staff:</label>
+                <select class="form-select mb-3" name="staff_id" id="staff" required>
+                  {% for staff in admin_online_staff %}
                     <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
                   {% endfor %}
                 </select>
                 <button type="submit" class="btn btn-primary w-100">Join Admin Queue</button>
               </form>
-              
+            {% else %}
+              <p class="text-muted">No staff currently online for this service.</p>
             {% endif %}
-          </div>
+          {% endif %}
         </div>
       </div>
-           
-    
+    </div>
 
-    <!-- Step 1: Select a service -->
-   
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  </div> <!-- /.row -->
+
+</div> <!-- /.container -->
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

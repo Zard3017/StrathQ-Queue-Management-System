@@ -17,20 +17,30 @@ class Staff(models.Model):
         ('Lecturer Consultation', 'Lecturer Consultation'),
     ]
 
+    STATUS_CHOICES = [
+        ('online', 'Online'),
+        ('unavailable', 'Unavailable'),
+    ]
+
     staff_id = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
+
     department = models.CharField(
         max_length=50,
         choices=DEPARTMENT_CHOICES,
-        default='SCES Helpdesk'  # or leave blank if you want staff to pick later
+        default='SCES Helpdesk'
     )
+
     status = models.CharField(
-    max_length=20,
-    choices=[('online', 'Online'), ('unavailable', 'Unavailable')],
-    default='unavailable'
-)
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='unavailable'
+    )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.department})"
 
     def is_available(self):
         return self.status == 'online'
