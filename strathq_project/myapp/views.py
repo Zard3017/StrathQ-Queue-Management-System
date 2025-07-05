@@ -12,6 +12,8 @@ from .models import Student, Staff
 
 
 
+
+
 def signup(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -129,8 +131,19 @@ def staff(request):
     staff_id = request.session.get('user_id')
     staff = get_object_or_404(Staff, id=staff_id)
 
-    return render(request, 'staff.html', {'staff': staff})
-  
+    #  Automatically get all services under the staff's department
+    department_services = Service.objects.filter(department=staff.department)
+
+    #  Automatically get queues for all those services
+    queues = Queue.objects.filter(service__in=department_services).order_by('joined_at')
+
+    context = {
+        'staff': staff,
+        'services': department_services,
+        'queues': queues,
+    }
+
+    return render(request, 'staff.html', context)
 
 def update_queue_status(request, queue_id, status):
     if not hasattr(request.user, 'profile') or request.user.profile.role != 'staff':
@@ -161,11 +174,33 @@ def logout_view(request):
 
 
 def join_queue(request):
-    departments = ['SCES Helpdesk', 'Administration', 'Lecturer Consultation']
-    services_by_department = {
-        dept: Service.objects.filter(department=dept).prefetch_related('staff_members') for dept in departments
+    services = Service.objects.all()
+    selected_service = request.GET.get("service")
+    selected_department = request.GET.get("department")
+
+    # Default to None
+    sces_online_staff = []
+    admin_online_staff = []
+
+    # If a service is selected, find staff based on department
+    if selected_service:
+        service_obj = Service.objects.filter(name=selected_service).first()
+        if service_obj:
+            selected_department = service_obj.department  # Infer department from service (optional)
+
+    # Filter online staff per department
+    sces_online_staff = Staff.objects.filter(department="SCES Helpdesk", is_online=True)
+    admin_online_staff = Staff.objects.filter(department="Administration", is_online=True)
+
+    context = {
+        'services': services,
+        'selected_service': selected_service,
+        'selected_department': selected_department,
+        'sces_online_staff': sces_online_staff,
+        'admin_online_staff': admin_online_staff,
     }
-    return render(request, 'join_queue.html', {'services_by_department': services_by_department})
+
+    return render(request, 'join_queue.html', context)
 
 def my_queues(request):
     if request.session.get('role') != 'student':
@@ -207,15 +242,10 @@ def get_staff_by_service(request, service_id):
             })
 
         return JsonResponse({'staff': data})
+@login_required
 def leave_queue(request, queue_id):
-    if request.session.get('role') != 'student':
-        return redirect('login')
-
-    student_id = request.session.get('user_id')
-    queue = get_object_or_404(Queue, id=queue_id, student_id=student_id, status='active')
-
-    queue.status = 'left'
-    queue.save()
+    queue = get_object_or_404(Queue, id=queue_id, student=request.user.student)
+    queue.delete()
     return redirect('my_queues')
 def position_in_queue(self):
     if self.status != 'active':
@@ -223,14 +253,91 @@ def position_in_queue(self):
     same_service_queues = Queue.objects.filter(service=self.service, status='active').order_by('joined_at')
     return list(same_service_queues).index(self) + 1
 def toggle_availability(request):
-    if request.session.get('role') != 'staff':
-        return redirect('login')
+    if request.method == 'POST':
+        staff_id = request.session.get('user_id')
+        staff = get_object_or_404(Staff, id=staff_id)
 
-    staff_id = request.session.get('user_id')
-    staff = get_object_or_404(Staff, id=staff_id)
+        # Optional: allow changing department on dashboard
+        department = request.POST.get('department')
+        if department:
+            staff.department = department
 
-    # Toggle availability
-    staff.is_available = not staff.is_available
-    staff.save()
+        staff.is_available = not staff.is_available
+        staff.save()
 
     return redirect('staff')
+
+
+def update_staff_services(request):
+    if request.method == "POST":
+        staff = get_object_or_404(Staff, pk=request.POST.get("staff_id"))
+        selected_services = request.POST.getlist("services")
+        services = Service.objects.filter(id__in=selected_services)
+
+        staff.services_offered.set(services)
+        return redirect('staff')  # or wherever you'd like
+    
+
+def get_online_staff_for_service(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    staff_list = Staff.objects.filter(department=service.department, status='online')
+
+    return render(request, 'partials/staff_dropdown.html', {
+        'staff_list': staff_list
+    })
+
+def update_status(request):
+    if request.method == 'POST':
+        staff_id = request.POST.get('staff_id')
+        new_status = request.POST.get('status')
+
+        staff = Staff.objects.filter(id=staff_id).first()
+        if staff:
+            staff.status = new_status
+            staff.save()
+    
+    return redirect('staff')  # Make sure 'staff' is the name of the staff dashboard route    
+def enqueue(request):
+    if request.method == 'POST':
+        student_id = request.session.get('user_id')  # assuming this is how you store the logged-in student
+        service_name = request.POST.get('service')
+        staff_id = request.POST.get('staff_id')
+        if not all([student_id, service_name, staff_id]):
+            messages.error(request, "Missing information. Please try again.")
+            return redirect('join_queue')
+        student = get_object_or_404(Student, id=student_id)
+        staff = get_object_or_404(Staff, id=staff_id)
+        service = get_object_or_404(Service, name=service_name)
+
+        # Check if student is already in a queue for this service
+        already_queued = Queue.objects.filter(student=student, service=service, status='waiting').exists()
+        if already_queued:
+            messages.warning(request, "You're already in the queue for this service.")
+            return redirect('join_queue')
+
+        # Add to queue
+        Queue.objects.create(
+            student=student,
+            service=service,
+            assigned_staff=staff,
+        )
+
+        messages.success(request, f"You have joined the queue for {service.name} with {staff.first_name}.")
+        return redirect('my_queues')  # or redirect back to student dashboard
+
+    else:
+        return redirect('join_queue')
+
+@login_required
+def update_queue_status(request, queue_id, new_status):
+    queue = get_object_or_404(Queue, id=queue_id)
+    
+    # Optional: add permission check so staff only affect their queues
+    if new_status == 'completed':
+        queue.status = 'completed'
+        queue.served_at = timezone.now()
+    elif new_status == 'removed':
+        queue.status = 'removed'
+    queue.save()
+
+    return redirect('staff_dashboard')

@@ -11,15 +11,32 @@ class Student(models.Model):
 
 
 class Staff(models.Model):
+    DEPARTMENT_CHOICES = [
+        ('SCES Helpdesk', 'SCES Helpdesk'),
+        ('Administration', 'Administration'),
+        ('Lecturer Consultation', 'Lecturer Consultation'),
+    ]
+
     staff_id = models.CharField(max_length=20, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
-    is_available = models.BooleanField(default=True)
+    department = models.CharField(
+        max_length=50,
+        choices=DEPARTMENT_CHOICES,
+        default='SCES Helpdesk'  # or leave blank if you want staff to pick later
+    )
+    status = models.CharField(
+    max_length=20,
+    choices=[('online', 'Online'), ('unavailable', 'Unavailable')],
+    default='unavailable'
+)
+
+    def is_available(self):
+        return self.status == 'online'
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.staff_id})"
-
 
 class Service(models.Model):
     DEPARTMENT_CHOICES = [
@@ -31,7 +48,7 @@ class Service(models.Model):
 
     name = models.CharField(max_length=100)
     department = models.CharField(max_length=50, choices=DEPARTMENT_CHOICES)
-    staff_members = models.ManyToManyField(Staff, related_name='services_offered')
+    staff_members = models.ManyToManyField('Staff', related_name='services_offered')
 
     def __str__(self):
         return f"{self.name} ({self.department})"
