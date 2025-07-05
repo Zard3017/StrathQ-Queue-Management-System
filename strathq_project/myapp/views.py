@@ -216,10 +216,16 @@ def get_staff_by_service(request, service_id):
 
 
 def leave_queue(request, queue_id):
-    queue = get_object_or_404(Queue, id=queue_id, student=request.user.student)
-    queue.delete()
-    return redirect('my_queues')
+    if request.session.get('role') != 'student':
+        return redirect('login')
 
+    student_id = request.session.get('user_id')
+    student = get_object_or_404(Student, id=student_id)
+    
+    queue = get_object_or_404(Queue, id=queue_id, student=student)
+    queue.delete()
+    
+    return redirect('my_queues')
 
 def position_in_queue(self):
     if self.status != 'active':
