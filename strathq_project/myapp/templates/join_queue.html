@@ -53,7 +53,7 @@
                     <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
                   {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-primary w-100">Join Queue</button>
+                <button type="submit" class="btn btn-primary w-100">Join SCES Helpdesk Queue</button>
               </form>
             {% else %}
               <p class="text-muted">No staff currently online for this service.</p>
@@ -116,7 +116,7 @@
               <option value="" disabled {% if not selected_service %}selected{% endif %}>Choose a service...</option>
               <option value="Assignment Query" {% if selected_service == 'Assignment Query' %}selected{% endif %}>Assignment Query</option>
               <option value="Project Assistance" {% if selected_service == 'Project Assistance' %}selected{% endif %}>Project Assistance</option>
-              <option value="General Lecturer Consultation" {% if selected_service == 'General Lecturer Consultation' %}selected{% endif %}></option>
+              <option value="General Lecturer Consultation" {% if selected_service == 'General Lecturer Consultation' %}selected{% endif %}>General Lecturer Consultation</option>
             </select>
           </form>
 
@@ -132,7 +132,7 @@
                     <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
                   {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-primary w-100">Join Admin Queue</button>
+                <button type="submit" class="btn btn-primary w-100">Join Consultation Queue</button>
               </form>
             {% else %}
               <p class="text-muted">No staff currently online for this service.</p>
