@@ -50,6 +50,8 @@
                 <p><strong>Service:</strong> {{ queue.service.name }}</p>
                 <p><strong>Your Position:</strong> <strong>{{ queue.position }}</strong> / {{ queue.total }}</p>
                 <p><strong>Estimated Wait:</strong> {{ queue.estimated_wait }} minutes</p>
+                <p><strong>Staff Assigned:</strong> {{ queue.assigned_staff.first_name }} {{ queue.assigned_staff.last_name }}</p>
+
                 <form method="POST" action="{% url 'leave_queue' queue.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Leave Queue</button>

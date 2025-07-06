@@ -47,10 +47,11 @@ def signup(request):
 
 
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('/student/' if request.session.get('role') == 'student' else '/staff/')
-    
-    list(messages.get_messages(request))  # Clear old messages
+    #  Forcefully clear all messages BEFORE rendering the login page
+    storage = messages.get_messages(request)
+    for _ in storage:
+        pass  # accessing clears them
+
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -189,6 +190,7 @@ def join_queue(request):
         'selected_service': selected_service,
         'admin_online_staff': admin_online_staff,
         'sces_online_staff': sces_online_staff,
+        'lecturer_online': lecturer_online
     }
     return render(request, 'join_queue.html', context)
 
