@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Staff Dashboard</title>
+  <title>Staff Dashboard - Strath Q</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
     :root {
       --primary-color: #1e62b0;
@@ -13,13 +20,20 @@
       --text-light: #fff;
       --bg-color: #f4f7f6;
       --border: #e0e0e0;
+      --shadow: rgba(0,0,0,0.05);
     }
 
     body {
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg-color);
       color: #333;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     header {
@@ -44,23 +58,28 @@
       padding: 8px 14px;
       border-radius: 5px;
       text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .logout-button:hover {
+      background: var(--primary-hover);
     }
 
     main {
       padding: 30px;
     }
 
-    h2 {
+    h2, h3 {
       margin-top: 0;
       color: var(--primary-color);
     }
 
-    .managed-services, .active-queue {
+    .managed-services, .active-queue, form, .filter-container {
       background: white;
       padding: 20px;
       margin-top: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      box-shadow: 0 2px 6px var(--shadow);
     }
 
     ul {
@@ -90,6 +109,7 @@
       border-radius: 4px;
       color: white;
       margin-right: 5px;
+      font-size: 0.95em;
     }
 
     .approve-btn {
@@ -100,8 +120,23 @@
       background-color: var(--danger-color);
     }
 
-    .filter-container {
-      margin-top: 20px;
+    .form-select, .btn {
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1em;
+      margin-right: 10px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
     }
 
     .no-queues {
@@ -124,27 +159,20 @@
   <main>
     <h2>Staff Dashboard</h2>
 
- 
-
-
-    
-<form method="post" action="{% url 'update_status' %}">
-    {% csrf_token %}
-    <input type="hidden" name="staff_id" value="{{ staff.id }}">
-    <select name="status" class="form-select mb-3">
+    <form method="post" action="{% url 'update_status' %}">
+      {% csrf_token %}
+      <input type="hidden" name="staff_id" value="{{ staff.id }}">
+      <select name="status" class="form-select">
         <option value="online" {% if staff.status == "online" %}selected{% endif %}>Online</option>
         <option value="unavailable" {% if staff.status == "unavailable" %}selected{% endif %}>Unavailable</option>
-    </select>
-    <button type="submit" class="btn btn-primary">Update Status</button>
-</form>
-
-
-
+      </select>
+      <button type="submit" class="btn btn-primary">Update Status</button>
+    </form>
 
     <!-- Filter -->
     <div class="filter-container">
       <label for="statusFilter"><strong>Filter Queues:</strong></label>
-      <select id="statusFilter">
+      <select id="statusFilter" class="form-select">
         <option value="all">All</option>
         <option value="active">Active</option>
         <option value="completed">Completed</option>
@@ -176,7 +204,6 @@
                 <td>
                   <a href="{% url 'update_queue_status' queue.id 'completed' %}" class="action-btn approve-btn">Mark as Completed</a>
                   <a href="{% url 'update_queue_status' queue.id 'removed' %}" class="action-btn decline-btn">Remove</a>
-
                 </td>
               </tr>
             {% endfor %}
@@ -199,12 +226,6 @@
         const rowStatus = row.getAttribute('data-status');
         row.style.display = (selectedStatus === 'all' || selectedStatus === rowStatus) ? '' : 'none';
       });
-    });
-     document.getElementById("department-select").addEventListener("change", function() {
-        const selectedDept = this.value;
-        document.querySelectorAll(".service-group").forEach(group => {
-            group.style.display = group.dataset.department === selectedDept ? "block" : "none";
-        });
     });
   </script>
 </body>
