@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Service, Queue, Notification, Student, Staff
 from .decorators import student_required, staff_required
+from django.db.models import Count
+from django.utils.timezone import now, timedelta
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 def signup(request):
@@ -319,3 +322,40 @@ def enqueue(request):
         return redirect('my_queues')
 
     return redirect('join_queue')
+
+
+@staff_member_required  # Only superusers and staff can access this view
+def reports_view(request):
+    # Basic stats
+    total_queues = Queue.objects.count()
+    completed_queues = Queue.objects.filter(status='completed').count()
+    left_queues = Queue.objects.filter(status='left').count()
+    active_queues = Queue.objects.filter(status='active').count()
+
+    # Top services by queue volume
+    top_services = (
+        Queue.objects
+        .values('service__name')
+        .annotate(total=Count('id'))
+        .order_by('-total')[:5]
+    )
+
+    # Staff activity: how many queues handled per staff
+    staff_activity = (
+        Queue.objects
+        .filter(status='completed')
+        .values('assigned_staff__first_name', 'assigned_staff__last_name')
+        .annotate(completed=Count('id'))
+        .order_by('-completed')[:5]
+    )
+
+    context = {
+        'total_queues': total_queues,
+        'completed_queues': completed_queues,
+        'left_queues': left_queues,
+        'active_queues': active_queues,
+        'top_services': top_services,
+        'staff_activity': staff_activity,
+    }
+
+    return render(request, 'reports.html', context)
