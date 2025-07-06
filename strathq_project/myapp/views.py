@@ -6,8 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Service, Queue, Notification, Student, Staff
 from .decorators import student_required, staff_required
-from notifications.signals import notify
-
 
 
 def signup(request):
@@ -49,6 +47,10 @@ def signup(request):
 
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('/student/' if request.session.get('role') == 'student' else '/staff/')
+    
+    list(messages.get_messages(request))  # Clear old messages
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -56,7 +58,7 @@ def login_view(request):
         try:
             student = Student.objects.get(student_id=username)
             if student.password == password:
-                request.session.flush()
+                request.session.clear()
                 request.session['user_id'] = student.id
                 request.session['role'] = 'student'
                 return redirect('student')
@@ -66,7 +68,7 @@ def login_view(request):
         try:
             staff = Staff.objects.get(staff_id=username)
             if staff.password == password:
-                request.session.flush()
+                request.session.clear()
                 request.session['user_id'] = staff.id
                 request.session['role'] = 'staff'
                 return redirect('staff')
@@ -120,21 +122,26 @@ def get_queue_status(request):
     student_id = request.session.get('user_id')
     student = get_object_or_404(Student, id=student_id)
 
-    try:
-        queue = Queue.objects.get(student=student, status='active')
-    except Queue.DoesNotExist:
-        return JsonResponse({'error': 'Not in queue'}, status=404)
+    queues = Queue.objects.filter(student=student, status='active').order_by('joined_at')
 
-    all_queues = Queue.objects.filter(service=queue.service, status='active').order_by('joined_at')
-    position = list(all_queues).index(queue) + 1
-    total = all_queues.count()
-    estimated_wait = (position - 1) * 2
+    if not queues.exists():
+        return JsonResponse({'error': 'Not in any queue'}, status=404)
 
-    return JsonResponse({
-        'position': position,
-        'total': total,
-        'estimated_wait': f"{estimated_wait} minutes"
-    })
+    queue_data = []
+    for queue in queues:
+        all_queues = Queue.objects.filter(service=queue.service, status='active').order_by('joined_at')
+        position = list(all_queues).index(queue) + 1
+        total = all_queues.count()
+        estimated_wait = (position - 1) * 4
+
+        queue_data.append({
+            'service': queue.service.name,
+            'position': position,
+            'total': total,
+            'estimated_wait': f"{estimated_wait} minutes"
+        })
+
+    return JsonResponse({'queues': queue_data})
 
 
 
@@ -173,7 +180,7 @@ def join_queue(request):
     services = Service.objects.all()
     admin_online_staff = Staff.objects.filter(department='Administration', status='online') if selected_department == 'Administration' else []
     sces_online_staff = Staff.objects.filter(department='SCES Helpdesk', status='online') if selected_department == 'SCES Helpdesk' else []
-    lecturer_online_staff = Staff.objects.filter(department='Lecturer Consultation', status='online') if selected_department == 'Lecturer Consultation' else []
+    lecturer_online= Staff.objects.filter(department='Lecturer', status='online')
 
 
     context = {
@@ -182,7 +189,6 @@ def join_queue(request):
         'selected_service': selected_service,
         'admin_online_staff': admin_online_staff,
         'sces_online_staff': sces_online_staff,
-        'lecturer_online_staff': lecturer_online_staff
     }
     return render(request, 'join_queue.html', context)
 
@@ -309,12 +315,5 @@ def enqueue(request):
 
         messages.success(request, f"You have joined the queue for {service.name} with {staff.first_name}.")
         return redirect('my_queues')
-
-        #Send notification to staff, after student joins queue
-        notify.send(    
-            sender=student,
-            recipient=staff,
-            verb='joined your queue for',target=service,
-        )
 
     return redirect('join_queue')

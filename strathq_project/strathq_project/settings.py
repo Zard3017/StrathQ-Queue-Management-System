@@ -42,6 +42,12 @@ INSTALLED_APPS = [
     
 ]
 
+
+SESSION_COOKIE_AGE = 3600  # 1 hour
+SESSION_SAVE_EVERY_REQUEST = True  # refresh session expiry on every request
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
