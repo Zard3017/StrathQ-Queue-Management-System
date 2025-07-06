@@ -21,7 +21,10 @@ urlpatterns = [
     path('enqueue/', views.enqueue, name='enqueue'),
     path('leave_queue/<int:queue_id>/', views.leave_queue, name='leave_queue'),
     path('queue/update/<int:queue_id>/<str:new_status>/', views.update_queue_status, name='update_queue_status'),
-    path('reports/', reports_view, name='reports')
+    path('reports/', reports_view, name='reports'),
+    path('export_excel/', views.export_excel, name='export_excel'),
+    path('reports/', views.reports, name='reports'),
+
     
     
 ]

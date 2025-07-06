@@ -9,6 +9,9 @@ from .decorators import student_required, staff_required
 from django.db.models import Count
 from django.utils.timezone import now, timedelta
 from django.contrib.admin.views.decorators import staff_member_required
+import openpyxl
+from django.http import HttpResponse
+
 
 
 def signup(request):
@@ -359,3 +362,31 @@ def reports_view(request):
     }
 
     return render(request, 'reports.html', context)
+
+def export_excel(request):
+    if not request.user.is_superuser:
+        return redirect('login')
+
+    queues = Queue.objects.all()
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Queue Report"
+
+    # Header
+    ws.append(['Student', 'Service', 'Staff', 'Status', 'Joined At', 'Served At'])
+
+    for q in queues:
+        ws.append([
+            f"{q.student.first_name} {q.student.last_name}",
+            q.service.name,
+            f"{q.assigned_staff.first_name} {q.assigned_staff.last_name}" if q.assigned_staff else "N/A",
+            q.get_status_display(),
+            q.joined_at.strftime('%Y-%m-%d %H:%M'),
+            q.served_at.strftime('%Y-%m-%d %H:%M') if q.served_at else "N/A"
+        ])
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=queue_report.xlsx'
+    wb.save(response)
+    return response
