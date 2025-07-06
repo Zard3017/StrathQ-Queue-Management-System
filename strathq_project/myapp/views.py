@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Service, Queue, Notification, Student, Staff
 from .decorators import student_required, staff_required
+from notifications.signals import notify
+
 
 
 def signup(request):
@@ -307,5 +309,12 @@ def enqueue(request):
 
         messages.success(request, f"You have joined the queue for {service.name} with {staff.first_name}.")
         return redirect('my_queues')
+
+        #Send notification to staff, after student joins queue
+        notify.send(    
+            sender=student,
+            recipient=staff,
+            verb='joined your queue for',target=service,
+        )
 
     return redirect('join_queue')
