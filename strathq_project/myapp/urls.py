@@ -23,7 +23,7 @@ urlpatterns = [
     path('queue/update/<int:queue_id>/<str:new_status>/', views.update_queue_status, name='update_queue_status'),
     path('reports/', reports_view, name='reports'),
     path('export_excel/', views.export_excel, name='export_excel'),
-    path('reports/', views.reports, name='reports'),
+   # path('reports/', views.reports, name='reports'),
 
     
     
