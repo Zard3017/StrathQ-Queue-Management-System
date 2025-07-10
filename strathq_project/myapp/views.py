@@ -9,6 +9,7 @@ from .decorators import student_required, staff_required
 from django.db.models import Count
 from django.utils.timezone import now, timedelta
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.hashers import make_password
 import openpyxl
 from django.http import HttpResponse
 
@@ -21,6 +22,9 @@ def signup(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         role = request.POST.get('role')
+
+        hashed_password = make_password(password)
+
 
         if role == 'student':
             if Student.objects.filter(student_id=username).exists():
